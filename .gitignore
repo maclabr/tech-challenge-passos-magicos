@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+ENV/
+
+# Notas internas do grupo (não vai pro repositório público)
+CLAUDE.md
+
+# Segredos / credenciais
+.streamlit/secrets.toml
+.env
+
+# Arquivos de SO
+.DS_Store
+Thumbs.db
+
+# Editores / IDEs
+.vscode/
+.idea/
