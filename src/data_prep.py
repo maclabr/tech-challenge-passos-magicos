@@ -19,6 +19,7 @@ por um pipeline de modelagem scikit-learn.
 from __future__ import annotations
 
 import re
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -62,6 +63,16 @@ _MAPA_PEDRA = {
 }
 
 _PADRAO_PRIMEIRO_NUMERO = re.compile(r"(\d+)")
+_PADRAO_CARACTER_NAO_ALFANUMERICO = re.compile(r"[^A-Za-z0-9 ]+")
+_PADRAO_ESPACOS_REPETIDOS = re.compile(r"\s+")
+
+# Colunas de texto/categóricas normalizadas por `padronizar_nomes_e_categorias`
+# (já com o nome de destino, em maiúsculo).
+_COLUNAS_CATEGORICAS_PARA_NORMALIZAR = ("GENERO", "PEDRA", "TURMA", "INSTITUICAO_ENSINO", "INDICADO", "ATINGIU_PV")
+
+# Renomeios que não são um simples uppercase: tiram o sufixo "_num" ao
+# padronizar (fase_num -> FASE, fase_ideal_num -> FASE_IDEAL).
+_RENOMEIO_COLUNA_ESPECIAL = {"fase_num": "FASE", "fase_ideal_num": "FASE_IDEAL"}
 
 
 def carregar_abas_brutas(raw_path: Path | str = RAW_XLSX_PATH) -> dict[str, pd.DataFrame]:
@@ -270,3 +281,39 @@ def calcular_pedra_por_inde(inde: pd.Series) -> pd.Series:
         return np.nan
 
     return inde.map(_classificar)
+
+
+def _normalizar_texto_categorico(valor):
+    """Remove acentos e caracteres especiais de um valor de categoria, converte para maiúsculo e preserva espaços entre palavras (NaN passa direto)."""
+    if pd.isna(valor):
+        return valor
+    sem_acento = unicodedata.normalize("NFKD", str(valor)).encode("ascii", "ignore").decode("ascii")
+    sem_especiais = _PADRAO_CARACTER_NAO_ALFANUMERICO.sub("", sem_acento)
+    return _PADRAO_ESPACOS_REPETIDOS.sub(" ", sem_especiais).strip().upper()
+
+
+def padronizar_nomes_e_categorias(painel: pd.DataFrame) -> pd.DataFrame:
+    """
+    Último passo de padronização antes de salvar o CSV consolidado. Faz só
+    duas coisas:
+
+    1. Renomeia todas as colunas para maiúsculo. `fase_num` e
+       `fase_ideal_num` viram `FASE` e `FASE_IDEAL` (tirando o sufixo
+       "_num", não só maiusculizando) — os demais nomes são um uppercase
+       direto do snake_case (ex.: `ida` -> `IDA`, `genero` -> `GENERO`).
+    2. Nas colunas de texto/categóricas (`GENERO`, `PEDRA`, `TURMA`,
+       `INSTITUICAO_ENSINO`, `INDICADO`, `ATINGIU_PV`, já com o nome pós
+       renomeio), remove acentos e caracteres especiais e converte para
+       maiúsculo, preservando os espaços entre palavras.
+
+    Deliberadamente NÃO arredonda nenhuma coluna numérica, NÃO troca o
+    separador decimal (continua ponto) e NÃO preenche valores ausentes —
+    ver a célula de decisão no notebook 01, logo antes do salvamento do CSV.
+    """
+    renomeado = painel.rename(
+        columns={coluna: _RENOMEIO_COLUNA_ESPECIAL.get(coluna, coluna.upper()) for coluna in painel.columns}
+    )
+    for coluna in _COLUNAS_CATEGORICAS_PARA_NORMALIZAR:
+        if coluna in renomeado.columns:
+            renomeado[coluna] = renomeado[coluna].map(_normalizar_texto_categorico)
+    return renomeado

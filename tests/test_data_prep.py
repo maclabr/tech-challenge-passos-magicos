@@ -19,6 +19,7 @@ from src.data_prep import (  # noqa: E402
     build_painel,
     build_painel_com_alvo,
     carregar_abas_brutas,
+    padronizar_nomes_e_categorias,
 )
 
 COLUNAS_ESPERADAS = {
@@ -84,3 +85,40 @@ def test_build_painel_com_alvo_nao_vaza_e_tem_na_no_ultimo_ano():
     alvo_2022 = painel_com_alvo.loc[painel_com_alvo["ano"] == 2022, "alvo_risco_defasagem_prox_ano"]
     assert alvo_2022.notna().mean() > 0.3
     assert set(alvo_2022.dropna().unique()).issubset({0.0, 1.0})
+
+
+def test_padronizar_nomes_e_categorias():
+    painel = build_painel(RAW_XLSX_PATH, verbose=False)
+    painel_com_alvo = build_painel_com_alvo(painel)
+    painel_final = padronizar_nomes_e_categorias(painel_com_alvo)
+
+    # 1. Todas as colunas do resultado final estão em maiúsculo.
+    assert all(coluna == coluna.upper() for coluna in painel_final.columns)
+
+    # 2. fase_num/fase_ideal_num -> FASE/FASE_IDEAL é um renomeio especial
+    # (tira o sufixo "_num", não é só um uppercase direto) — confirma que
+    # nem o nome original nem um uppercase ingênuo (FASE_NUM) sobrevivem.
+    assert "FASE" in painel_final.columns
+    assert "FASE_IDEAL" in painel_final.columns
+    assert "fase_num" not in painel_final.columns
+    assert "fase_ideal_num" not in painel_final.columns
+    assert "FASE_NUM" not in painel_final.columns
+    assert "FASE_IDEAL_NUM" not in painel_final.columns
+
+    # 3. Colunas de texto/categóricas normalizadas: sem acento (só ASCII) e
+    # em maiúsculo em todo valor não-nulo.
+    colunas_categoricas = ["GENERO", "PEDRA", "TURMA", "INSTITUICAO_ENSINO", "INDICADO", "ATINGIU_PV"]
+    for coluna in colunas_categoricas:
+        valores_nao_nulos = painel_final[coluna].dropna()
+        assert (valores_nao_nulos == valores_nao_nulos.str.upper()).all(), f"{coluna} tem valor não maiúsculo"
+        assert valores_nao_nulos.map(str.isascii).all(), f"{coluna} tem valor com caractere não-ASCII"
+    assert not painel_final["PEDRA"].dropna().str.contains("Á").any()
+
+    # 4. Nenhum NaN foi preenchido com placeholder: a contagem de ausentes
+    # por coluna é a mesma antes e depois (rename preserva a ordem das
+    # colunas, então a comparação posicional é válida).
+    assert (painel_com_alvo.isna().sum().to_numpy() == painel_final.isna().sum().to_numpy()).all()
+
+    # 5. Nenhuma coluna numérica foi arredondada: INDE final deve ser
+    # idêntica (não só aproximada) à coluna original.
+    assert painel_final["INDE"].equals(painel_com_alvo["inde"])
