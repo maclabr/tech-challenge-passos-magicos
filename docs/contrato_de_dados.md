@@ -26,7 +26,7 @@ A base antiga compactada é uma fonte potencial de enriquecimento futuro. Ela n�
 | `FASE`, `FASE_IDEAL` | numérico | Nível efetivo e nível esperado. `ALFA = 0`; demais valores são extraídos do primeiro nível informado |
 | `DEFASAGEM_CALCULADA` | numérico | `FASE - FASE_IDEAL`; negativo significa defasagem |
 | `DEFASAGEM_FORNECIDA` | numérico | Campo original. Mantido para reconciliação, sem sobrescrever a calculada |
-| `IAN`, `IDA`, `IEG`, `IAA`, `IPS`, `IPP`, `IPV` | numérico | Indicadores PEDE; valores esperados aproximadamente no intervalo 0–10. `IPP` não foi coletado em 2022 |
+| `IAN`, `IDA`, `IEG`, `IAA`, `IPS`, `IPP`, `IPV` | numérico | Indicadores PEDE; valores esperados aproximadamente no intervalo 0–10. `IPP` não consta na aba PEDE2022 recebida |
 | `INDE` | numérico | Índice global fornecido; não deve ser recalculado sem fórmula/ponderações oficiais |
 | `PEDRA` | categórico | Classificação fornecida: `QUARTZO`, `AGATA`, `AMETISTA`, `TOPAZIO`; mantida como informação de origem |
 | `NOTA_*` | numérico | Notas de Matemática, Português e Inglês; ausências são preservadas |
@@ -40,7 +40,7 @@ A base antiga compactada é uma fonte potencial de enriquecimento futuro. Ela n�
 2. Exigir unicidade de `RA + ANO`, anos permitidos e presença de `FASE`, `FASE_IDEAL` e `DEFASAGEM_CALCULADA`.
 3. Reconciliar `DEFASAGEM_FORNECIDA` e `DEFASAGEM_CALCULADA`; divergências devem ser reportadas, não corrigidas silenciosamente.
 4. Manter `PEDRA` fornecida e uma eventual `PEDRA_CALCULADA` em campos separados. A divergência entre ambas exige validação da Passos Mágicos.
-5. Tratar ausências estruturais por ano como indisponibilidade de medição, não como zero. Em particular, excluir `IPP` de comparações que incluam 2022 ou usar uma estratégia de disponibilidade explicitamente validada no modelo.
+5. Tratar ausências estruturais por ano como indisponibilidade de medição, não como zero. Em particular, excluir `IPP` de comparações que incluam 2022 ou usar uma estratégia de disponibilidade explicitamente validada no modelo. A ausência na aba recebida não prova que o indicador não tenha sido coletado pela Associação.
 6. Não expor nome, data de nascimento integral, `RA` ou qualquer identificador individual em visualizações, logs, apresentação ou aplicativo.
 
 ## 5. Definições analíticas
