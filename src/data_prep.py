@@ -30,7 +30,9 @@ RANDOM_STATE = 42
 RAW_XLSX_PATH = Path(__file__).resolve().parent.parent / "data" / "raw" / "base_bronze.xlsx"
 SHEET_NAMES = ("PEDE2022", "PEDE2023", "PEDE2024")
 
-# Faixas oficiais de Pedra por INDE (documento interno Passos Mágicos).
+# Faixas de referência de Pedra por INDE, documentadas no dicionário do
+# Datathon. Como as extremidades se sobrepõem e a Pedra fornecida diverge
+# em parte da base, esta regra serve somente para reconciliação diagnóstica.
 # Os limites são inclusivos nas duas pontas e se tocam entre faixas
 # vizinhas (ex.: 5,506 é o teto de Quartzo E o piso de Ágata); a ordem da
 # tupla resolve o empate de fronteira a favor da faixa mais baixa.
@@ -270,7 +272,7 @@ def build_painel_com_alvo(painel: pd.DataFrame) -> pd.DataFrame:
 
 
 def calcular_pedra_por_inde(inde: pd.Series) -> pd.Series:
-    """Recalcula a Pedra a partir do INDE usando as faixas oficiais em `FAIXAS_PEDRA_POR_INDE` (documento interno PM)."""
+    """Classifica o INDE pelas faixas de referência, para QA; não substitui a Pedra fornecida."""
 
     def _classificar(valor: float) -> float | str:
         if pd.isna(valor):

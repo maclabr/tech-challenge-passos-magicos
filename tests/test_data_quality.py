@@ -4,10 +4,16 @@ import sys
 from pathlib import Path
 
 import pandas as pd
+from pandas.testing import assert_frame_equal
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from src.data_prep import RAW_XLSX_PATH, build_painel, build_painel_com_alvo  # noqa: E402
+from src.data_prep import (  # noqa: E402
+    RAW_XLSX_PATH,
+    build_painel,
+    build_painel_com_alvo,
+    padronizar_nomes_e_categorias,
+)
 
 
 INDICADORES = ["ian", "ida", "ieg", "iaa", "ips", "ipp", "ipv"]
@@ -55,3 +61,26 @@ def test_alvo_temporal_nao_observa_o_ultimo_ano_nem_usa_valores_invalidos():
     assert set(valores_observados.unique()).issubset({0.0, 1.0})
     assert painel.loc[painel["ano"] == 2022, "alvo_risco_defasagem_prox_ano"].notna().mean() > 0.5
     assert painel.loc[painel["ano"] == 2023, "alvo_risco_defasagem_prox_ano"].notna().mean() > 0.5
+
+
+def test_alvo_usa_exatamente_o_mesmo_ra_no_ano_seguinte():
+    painel = pd.DataFrame(
+        {
+            "ra": [1, 1, 1, 2, 2],
+            "ano": [2022, 2023, 2024, 2022, 2024],
+            "defasagem_calculada": [0, -1, 0, 0, -1],
+        }
+    )
+    resultado = build_painel_com_alvo(painel)
+
+    assert resultado.loc[(resultado["ra"] == 1) & (resultado["ano"] == 2022), "alvo_risco_defasagem_prox_ano"].item() == 1
+    assert resultado.loc[(resultado["ra"] == 1) & (resultado["ano"] == 2023), "alvo_risco_defasagem_prox_ano"].item() == 0
+    assert resultado.loc[(resultado["ra"] == 1) & (resultado["ano"] == 2024), "alvo_risco_defasagem_prox_ano"].isna().item()
+    assert resultado.loc[(resultado["ra"] == 2) & (resultado["ano"] == 2022), "alvo_risco_defasagem_prox_ano"].isna().item()
+
+
+def test_csv_processado_e_reproducao_exata_da_transformacao():
+    reconstruido = padronizar_nomes_e_categorias(_painel_com_alvo())
+    salvo = pd.read_csv(RAW_XLSX_PATH.parent.parent / "processed" / "pede_painel_consolidado.csv")
+
+    assert_frame_equal(reconstruido.reset_index(drop=True), salvo.reset_index(drop=True), check_dtype=False, check_exact=False)
