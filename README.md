@@ -8,13 +8,21 @@ Projeto de Data Analytics para a Pesquisa Extensiva do Desenvolvimento Educacion
 data/raw/base_bronze.xlsx             # fonte PEDE entregue para o Datathon
 data/processed/pede_painel_consolidado.csv
 src/data_prep.py                      # harmonização 2022–2024
+src/eda_utils.py                      # funções de apoio à análise exploratória
+src/modeling.py                       # pipeline de modelagem de risco com validação temporal
 notebooks/01_limpeza_e_preparacao.ipynb
 notebooks/02_analise_exploratoria.ipynb
+notebooks/03_modelagem_risco_temporal.ipynb
 docs/contrato_de_dados.md             # grão, definições, regras e pendências
-tests/                                # testes de preparação e qualidade
+docs/linhagem_de_dados.md             # fluxo de transformação e verificações automatizadas
+app/                                  # app Streamlit (ainda vazio)
+models/                               # pipeline treinado persistido
+tests/                                # testes de preparação, qualidade e modelagem
 ```
 
 ## Como reproduzir
+
+Requer Python 3.12+ (ver `runtime.txt`; `numpy==2.5.1` em `requirements.txt` não instala em Python 3.11).
 
 ```bash
 python3 -m venv .venv
@@ -24,7 +32,7 @@ pytest -q
 jupyter notebook notebooks/01_limpeza_e_preparacao.ipynb
 ```
 
-Execute o notebook 01 antes do 02 caso `data/processed/pede_painel_consolidado.csv` ainda não exista ou a fonte bronze seja atualizada.
+Execute o notebook 01 antes do 02 caso `data/processed/pede_painel_consolidado.csv` ainda não exista ou a fonte bronze seja atualizada. O notebook `03_modelagem_risco_temporal.ipynb` usa a mesma fonte processada e não depende do 02, mas segue a mesma ordem lógica do pipeline.
 
 ## Decisões de dados
 

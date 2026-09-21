@@ -28,6 +28,7 @@
 | Reconciliação de defasagem | `tests/test_data_quality.py` |
 | Regra temporal do alvo | `tests/test_data_quality.py` |
 | Reprodutibilidade do CSV processado | `tests/test_data_quality.py` |
+| Ausência de vazamento nas features de modelagem, seleção de modelo por CV e calibração | `tests/test_modeling.py` |
 
 ## Limites de linhagem
 
