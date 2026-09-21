@@ -15,9 +15,10 @@ notebooks/02_analise_exploratoria.ipynb
 notebooks/03_modelagem_risco_temporal.ipynb
 docs/contrato_de_dados.md             # grão, definições, regras e pendências
 docs/linhagem_de_dados.md             # fluxo de transformação e verificações automatizadas
-app/                                  # app Streamlit (ainda vazio)
-models/                               # pipeline treinado persistido
-tests/                                # testes de preparação, qualidade e modelagem
+app/streamlit_app.py                  # app Streamlit de avaliação manual de risco (um aluno por vez)
+src/treinar_e_persistir_modelos.py    # treina e salva os pipelines de produção em models/
+models/                                # pipelines calibrados/explicativos (.joblib) e metadados.json
+tests/                                # testes de preparação, qualidade, modelagem e inferência
 ```
 
 ## Como reproduzir
@@ -33,6 +34,16 @@ jupyter notebook notebooks/01_limpeza_e_preparacao.ipynb
 ```
 
 Execute o notebook 01 antes do 02 caso `data/processed/pede_painel_consolidado.csv` ainda não exista ou a fonte bronze seja atualizada. O notebook `03_modelagem_risco_temporal.ipynb` usa a mesma fonte processada e não depende do 02, mas segue a mesma ordem lógica do pipeline.
+
+## Como rodar o app
+
+Requer os pipelines persistidos em `models/` (gerados por `python -m src.treinar_e_persistir_modelos`, já versionados no repositório):
+
+```bash
+streamlit run app/streamlit_app.py
+```
+
+O app é um formulário manual, um aluno por vez: nenhum dado real de aluno é buscado, exibido ou armazenado (ver regra 6 do contrato de dados).
 
 ## Decisões de dados
 

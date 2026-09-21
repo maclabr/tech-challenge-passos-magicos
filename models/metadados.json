@@ -1,0 +1,35 @@
+{
+  "features_numericas": [
+    "FASE",
+    "FASE_IDEAL",
+    "DEFASAGEM_CALCULADA",
+    "IAN",
+    "IDA",
+    "IEG",
+    "IAA",
+    "IPS",
+    "IPV",
+    "NOTA_MATEMATICA",
+    "NOTA_PORTUGUES",
+    "NOTA_INGLES",
+    "IDADE_ANOS",
+    "ANO_INGRESSO"
+  ],
+  "random_state": 42,
+  "data_treino": "2026-09-21",
+  "metricas_referencia": {
+    "nota": "Métricas da validação temporal auditada (treino 2022 -> teste 2023/2024), documentadas no notebook 03. Não são métricas do modelo de produção persistido aqui, que é retreinado em todo o histórico rotulado disponível.",
+    "por_alvo": {
+      "risco_futuro": {
+        "accuracy": 0.725,
+        "f1_macro": 0.713,
+        "roc_auc": 0.831
+      },
+      "incidencia_nova_defasagem": {
+        "accuracy": 0.676,
+        "f1_macro": 0.534,
+        "roc_auc": 0.693
+      }
+    }
+  }
+}

@@ -215,3 +215,56 @@ def aplicar_calibracao(pipeline_vencedor: Pipeline, x_treino: pd.DataFrame, y_tr
 def tabela_limiares(y_verdadeiro: pd.Series, probabilidades: np.ndarray, limiares: tuple[float, ...] = (0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8)) -> pd.DataFrame:
     """Expõe trade-offs sem escolher o limiar de produção sem regra de negócio."""
     return pd.DataFrame([calcular_metricas_operacionais(y_verdadeiro, probabilidades, limiar) for limiar in limiares])
+
+
+def treinar_pipeline_final(painel: pd.DataFrame, tipo_alvo: str) -> tuple[CalibratedClassifierCV, Pipeline]:
+    """Treina os pipelines de produção no painel inteiro (sem split treino/teste).
+
+    A validação temporal já foi feita e documentada no notebook 03; aqui o objetivo é
+    persistir o modelo final, treinado em todo o histórico rotulado disponível.
+
+    Retorna dois pipelines ajustados nos mesmos dados: o calibrado (gera a
+    probabilidade) e um auxiliar não calibrado, ajustado uma única vez, usado só
+    para leitura de coeficiente/explicação — o `CalibratedClassifierCV` com cv=5
+    guarda 5 classificadores internos por fold, potencialmente com colunas de
+    indicador de ausência diferentes entre folds, então não serve para extrair
+    coeficiente de forma segura.
+    """
+    x, y, _ = preparar_dataset_modelagem(painel, tipo_alvo)
+
+    pipeline_explicativo = criar_pipeline_logistico()
+    pipeline_explicativo.fit(x, y)
+
+    pipeline_calibrado = aplicar_calibracao(criar_pipeline_logistico(), x, y)
+
+    return pipeline_calibrado, pipeline_explicativo
+
+
+def explicar_previsao(pipeline_explicativo: Pipeline, x_uma_linha: pd.DataFrame, top_n: int = 3) -> list[dict]:
+    """Explica uma previsão individual pelos maiores termos `coeficiente × valor padronizado`.
+
+    Usa o pipeline auxiliar não calibrado (ver `treinar_pipeline_final`) para reproduzir
+    a mesma transformação do treino (imputação + padronização) e então decompor a
+    contribuição linear de cada indicador de negócio para essa linha específica.
+    """
+    imputador = pipeline_explicativo.named_steps["imputador"]
+    escala = pipeline_explicativo.named_steps["escala"]
+    modelo = pipeline_explicativo.named_steps["modelo"]
+
+    x_imputado = imputador.transform(x_uma_linha)
+    x_padronizado = escala.transform(x_imputado)
+    nomes_colunas = imputador.get_feature_names_out(input_features=list(FEATURES_NUMERICAS))
+    coeficientes = modelo.coef_[0]
+    contribuicoes = coeficientes * x_padronizado[0]
+
+    itens = [
+        {
+            "feature": nome,
+            "contribuicao": float(contribuicao),
+            "direcao": "aumenta o risco" if contribuicao > 0 else "reduz o risco",
+        }
+        for nome, contribuicao in zip(nomes_colunas, contribuicoes)
+        if not nome.startswith("missingindicator_")
+    ]
+    itens.sort(key=lambda item: abs(item["contribuicao"]), reverse=True)
+    return itens[:top_n]
