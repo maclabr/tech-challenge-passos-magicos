@@ -8,3 +8,4 @@ seaborn==0.13.2
 scikit-learn==1.9.0
 joblib==1.5.3
 streamlit==1.59.1
+altair>=5.0,<7.0
