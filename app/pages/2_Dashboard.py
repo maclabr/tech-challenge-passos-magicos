@@ -15,6 +15,214 @@ df = carregar_dados()
 
 
 # ============================================================
+# PALETA SEMÂNTICA DO DASHBOARD
+# ============================================================
+
+SKY = "#42A5D9"
+GREEN = "#45B98C"
+AMBER = "#F2B544"
+PURPLE = "#8B73C7"
+CORAL = "#F47C6C"
+TEAL = "#18A6A6"
+NAVY = "#073B63"
+PEDRAS_CORES = [PURPLE, TEAL, AMBER, SKY]
+
+st.markdown(
+    """
+<style>
+
+[data-testid="stSelectbox"] > div > div {
+    border-radius: 10px;
+}
+
+div[data-testid="stMetric"] {
+    position: relative;
+    overflow: hidden;
+}
+
+div[data-testid="stMetric"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 3px;
+    background: #18A6A6;
+}
+
+div[data-testid="stHorizontalBlock"] > div:nth-child(4n+1) div[data-testid="stMetric"]::before {
+    background: #42A5D9;
+}
+
+div[data-testid="stHorizontalBlock"] > div:nth-child(4n+2) div[data-testid="stMetric"]::before {
+    background: #45B98C;
+}
+
+div[data-testid="stHorizontalBlock"] > div:nth-child(4n+3) div[data-testid="stMetric"]::before {
+    background: #F47C6C;
+}
+
+div[data-testid="stHorizontalBlock"] > div:nth-child(4n+4) div[data-testid="stMetric"]::before {
+    background: #8B73C7;
+}
+
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 5px 18px rgba(4, 55, 87, 0.025);
+}
+
+
+/* Semântica específica para blocos de três KPIs de defasagem */
+div[data-testid="stHorizontalBlock"]:has(> div:nth-child(3):last-child)
+    > div:nth-child(1) div[data-testid="stMetric"]::before {
+    background: #F47C6C;
+}
+
+div[data-testid="stHorizontalBlock"]:has(> div:nth-child(3):last-child)
+    > div:nth-child(2) div[data-testid="stMetric"]::before {
+    background: #45B98C;
+}
+
+div[data-testid="stHorizontalBlock"]:has(> div:nth-child(3):last-child)
+    > div:nth-child(3) div[data-testid="stMetric"]::before {
+    background: #42A5D9;
+}
+
+
+.semantic-kpi {
+    min-height: 112px;
+    padding: 1rem 1.15rem;
+    background: #FFFFFF;
+    border: 1px solid #DDEAF0;
+    border-top: 3px solid var(--kpi-color);
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(4, 55, 87, 0.035);
+}
+
+.semantic-kpi-label {
+    color: #60798B;
+    font-size: 0.76rem;
+    font-weight: 500;
+    margin-bottom: 0.45rem;
+}
+
+.semantic-kpi-value {
+    color: #3F5F75;
+    font-size: 1.55rem;
+    line-height: 1.1;
+    font-weight: 800;
+}
+
+.dashboard-note {
+    border-left: 4px solid #F2B544;
+    background: #FFF8E8;
+    border-radius: 0 12px 12px 0;
+    padding: 0.8rem 1rem;
+    color: #665B43;
+    font-size: 0.82rem;
+    line-height: 1.55;
+}
+
+
+/* ======================================================
+   CABEÇALHO COLORIDO DA PÁGINA
+   ====================================================== */
+.page-hero-soft {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #18A6A62E;
+    border-radius: 18px;
+    padding: 1.35rem 8.5rem 1.35rem 1.55rem;
+    margin: 0.15rem 0 1.25rem 0;
+    background:
+        radial-gradient(circle at 96% 18%, #18A6A61F 0 7%, transparent 7.5%),
+        radial-gradient(circle at 91% 88%, #18A6A612 0 15%, transparent 15.5%),
+        linear-gradient(110deg, #EAF8FA 0%, #EDF7FC 58%, #FFFFFF 100%);
+    box-shadow: 0 7px 24px rgba(7, 59, 99, 0.035);
+}
+.page-hero-soft::before {
+    content: "";
+    position: absolute;
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    left: -78px;
+    top: -64px;
+    background: #18A6A612;
+}
+.page-hero-eyebrow {
+    position: relative;
+    z-index: 2;
+    color: #42A5D9;
+    font-size: 0.73rem;
+    font-weight: 850;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    margin-bottom: 0.55rem;
+}
+.page-hero-eyebrow::after {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 3px;
+    margin-top: 0.42rem;
+    border-radius: 999px;
+    background: #18A6A6;
+}
+.page-hero-title {
+    position: relative;
+    z-index: 2;
+    color: #073B63;
+    font-size: clamp(2rem, 3vw, 2.75rem);
+    line-height: 1.08;
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    margin-bottom: 0.55rem;
+}
+.page-hero-description {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    color: #526D80;
+    font-size: 0.96rem;
+    line-height: 1.55;
+}
+.page-hero-vector {
+    position: absolute;
+    z-index: 1;
+    right: 2.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 78px;
+    height: 78px;
+    color: #18A6A6;
+    opacity: 0.86;
+}
+.page-hero-vector svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.65;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+@media (max-width: 900px) {
+    .page-hero-soft {
+        padding-right: 1.35rem;
+    }
+    .page-hero-vector {
+        display: none;
+    }
+}
+
+</style>
+""",
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
 # FUNÇÕES AUXILIARES
 # ============================================================
 
@@ -34,6 +242,19 @@ def formatar_percentual(valor):
     return f"{valor:.1f}%".replace(".", ",")
 
 
+def kpi_semantico(rotulo, valor, cor):
+    """KPI visual com cor definida pelo significado do indicador."""
+    st.markdown(
+        (
+            f'<div class="semantic-kpi" style="--kpi-color:{cor};">'
+            f'<div class="semantic-kpi-label">{rotulo}</div>'
+            f'<div class="semantic-kpi-value">{valor}</div>'
+            '</div>'
+        ),
+        unsafe_allow_html=True,
+    )
+
+
 def classificar_defasagem(valor):
     if pd.isna(valor):
         return "Sem informação"
@@ -42,32 +263,19 @@ def classificar_defasagem(valor):
     return "Sem defasagem"
 
 
-# ============================================================
+# ==========================================================
 # CABEÇALHO
-# ============================================================
+# ==========================================================
 
 st.markdown(
-    '<div class="page-label">PANORAMA EDUCACIONAL</div>',
-    unsafe_allow_html=True,
-)
-
-st.title("Indicadores e evolução dos alunos")
-
-st.markdown(
-    """
-<div class="page-description">
-Explore os principais indicadores educacionais e acompanhe
-a evolução dos alunos atendidos pela Passos Mágicos entre
-2022 e 2024.
-</div>
-    """,
+    '<div class="page-hero-soft"><div class="page-hero-eyebrow">PANORAMA EDUCACIONAL</div><div class="page-hero-title">Indicadores e evolução dos alunos</div><div class="page-hero-description">Explore os principais indicadores educacionais e acompanhe a evolução dos alunos atendidos pela Passos Mágicos entre 2022 e 2024.</div><div class="page-hero-vector"><svg viewBox="0 0 24 24"><path d="M4 20V12"></path><path d="M10 20V8"></path><path d="M16 20V5"></path><path d="M3 20h18"></path><path d="m5 8 5-3 4 2 6-5"></path><path d="M17 2h3v3"></path></svg></div></div>',
     unsafe_allow_html=True,
 )
 
 st.write("")
 
 
-# ============================================================
+# ==========================================================
 # FILTROS
 # ============================================================
 
@@ -312,12 +520,12 @@ with def_col1:
             chart = (
                 alt.Chart(evolucao_defasagem)
                 .mark_line(
-                    color=charts.TEAL,
+                    color=CORAL,
                     strokeWidth=3,
                     point=alt.OverlayMarkDef(
                         filled=True,
                         size=90,
-                        color=charts.TEAL,
+                        color=CORAL,
                     ),
                 )
                 .encode(
@@ -398,9 +606,9 @@ with def_col1:
                 campo_y="Registros",
                 dominio=ordem_situacao,
                 cores=[
-                    charts.NAVY,
-                    charts.TEAL,
-                    charts.LIGHT_TEAL,
+                    CORAL,
+                    GREEN,
+                    SKY,
                 ],
                 titulo_x="Situação",
                 titulo_y="Registros",
@@ -452,9 +660,9 @@ with def_col2:
             campo_y="Registros",
             dominio=ordem_situacao,
             cores=[
-                charts.NAVY,
-                charts.TEAL,
-                charts.LIGHT_TEAL,
+                CORAL,
+                GREEN,
+                SKY,
             ],
             titulo_x="Situação",
             titulo_y="Registros",
@@ -601,7 +809,7 @@ with pede1:
                 titulo_x="Indicador",
                 titulo_y="Média",
                 ordem=indicadores_pede,
-                cor=charts.BLUE,
+                cor=TEAL,
                 formato_tooltip=".2f",
                 altura=370,
             )
@@ -683,7 +891,7 @@ with pede2:
                     titulo_x="Indicador",
                     titulo_y="Média",
                     ordem=indicadores_pede,
-                    cor=charts.TEAL,
+                    cor=SKY,
                     formato_tooltip=".2f",
                     altura=370,
                 )
@@ -793,9 +1001,10 @@ for coluna_card, disciplina in zip(
         else:
             valor = "—"
 
-        st.metric(
+        kpi_semantico(
             f"Média • {disciplina}",
             valor,
+            AMBER,
         )
 
 st.write("")
@@ -826,7 +1035,7 @@ with nota_col1:
                     "Português",
                     "Inglês",
                 ],
-                cor=charts.BLUE,
+                cor=AMBER,
                 formato_tooltip=".2f",
                 altura=370,
             )
@@ -923,7 +1132,7 @@ with nota_col2:
                         "Português",
                         "Inglês",
                     ],
-                    cor=charts.TEAL,
+                    cor=AMBER,
                     formato_tooltip=".2f",
                     altura=370,
                 )
@@ -1140,33 +1349,37 @@ else:
 t1, t2, t3, t4 = st.columns(4)
 
 with t1:
-    st.metric(
+    kpi_semantico(
         "Alunos comparáveis",
         formatar_inteiro(total_comparavel),
+        SKY,
     )
 
 with t2:
-    st.metric(
+    kpi_semantico(
         "Melhoraram",
         formatar_percentual(
             percentual_melhorou
         ),
+        GREEN,
     )
 
 with t3:
-    st.metric(
+    kpi_semantico(
         "Mantiveram",
         formatar_percentual(
             percentual_manteve
         ),
+        TEAL,
     )
 
 with t4:
-    st.metric(
+    kpi_semantico(
         "Pioraram",
         formatar_percentual(
             percentual_piorou
         ),
+        CORAL,
     )
 
 st.write("")
@@ -1220,9 +1433,9 @@ with traj1:
                     "Piorou",
                 ],
                 cores=[
-                    charts.TEAL,
-                    charts.NAVY,
-                    charts.LIGHT_TEAL,
+                    GREEN,
+                    TEAL,
+                    CORAL,
                 ],
                 titulo_x="Trajetória",
                 titulo_y="Alunos",
@@ -1334,7 +1547,7 @@ with traj2:
                         sort=["2022", "2024"],
                         scale=alt.Scale(
                             domain=["2022", "2024"],
-                            range=[charts.NAVY, charts.TEAL],
+                            range=[PURPLE, TEAL],
                         ),
                     ),
                     tooltip=[

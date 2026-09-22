@@ -10,6 +10,13 @@ BLUE = "#0B5F82"
 TEAL = "#18A6A6"
 LIGHT_TEAL = "#69D4D0"
 
+# Cores de apoio da identidade visual
+SKY = "#42A5D9"
+GREEN = "#45B98C"
+AMBER = "#F2B544"
+CORAL = "#F47C6C"
+PURPLE = "#8B73C7"
+
 TEXT = "#143A59"
 MUTED = "#527087"
 GRID = "#E8F0F4"
