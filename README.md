@@ -1,4 +1,4 @@
-# Tech Challenge 5 — Passos Mágicos
+# Tech Challenge 5 Passos Mágicos
 
 Projeto desenvolvido para o **Datathon da Pós-Tech em Data Analytics da FIAP**, a partir dos dados da **Pesquisa Extensiva do Desenvolvimento Educacional (PEDE)** da Associação Passos Mágicos.
 
@@ -47,8 +47,8 @@ Reúne análises descritivas e longitudinais dos dados educacionais, incluindo:
 
 Permite informar manualmente os indicadores de um aluno e utilizar os pipelines persistidos para estimar:
 
-- **Risco futuro de defasagem** — probabilidade de o aluno estar defasado no próximo período observado;
-- **Nova incidência de defasagem** — probabilidade de um aluno atualmente não defasado passar a apresentar defasagem no período seguinte.
+- **Risco futuro de defasagem** probabilidade de o aluno estar defasado no próximo período observado;
+- **Nova incidência de defasagem** probabilidade de um aluno atualmente não defasado passar a apresentar defasagem no período seguinte.
 
 A página também apresenta uma explicação dos fatores que mais contribuíram para aumentar ou reduzir a previsão.
 
@@ -335,6 +335,6 @@ Para detalhes sobre regras, transformações e decisões metodológicas, consult
 ## Projeto acadêmico
 
 **FIAP — Pós-Tech Data Analytics**  
-**Tech Challenge / Datathon — Passos Mágicos**
+**Tech Challenge / Datathon Passos Mágicos**
 
 Solução desenvolvida para fins acadêmicos, integrando preparação de dados, análise exploratória, visualização, Machine Learning, explicabilidade e disponibilização em Streamlit.

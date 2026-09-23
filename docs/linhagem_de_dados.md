@@ -1,4 +1,4 @@
-# Linhagem de dados — PEDE 2022–2024
+# Linhagem de dados PEDE 2022-2024
 
 ## Fluxo
 

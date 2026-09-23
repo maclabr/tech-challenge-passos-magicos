@@ -1,4 +1,4 @@
-# Contrato de dados — PEDE 2022–2024
+# Contrato de dados PEDE 2022–2024
 
 ## 1. Finalidade e fonte de verdade
 
@@ -39,7 +39,7 @@ A base antiga compactada é uma fonte potencial de enriquecimento futuro. Ela n�
 1. Não eliminar linhas nem preencher ausências automaticamente na camada processada.
 2. Exigir unicidade de `RA + ANO`, anos permitidos e presença de `FASE`, `FASE_IDEAL` e `DEFASAGEM_CALCULADA`.
 3. Reconciliar `DEFASAGEM_FORNECIDA` e `DEFASAGEM_CALCULADA`; divergências devem ser reportadas, não corrigidas silenciosamente.
-4. A Pedra recalculada pela fórmula do INDE (`calcular_pedra_por_inde`) é usada apenas como comparação de QA pontual dentro do notebook 01 (variável `pedra_recalculada`, não persistida) — não é um campo mantido no painel processado. Caso vire um campo oficial `PEDRA_CALCULADA` no futuro, esta regra deve ser atualizada. A divergência entre a Pedra fornecida e a recalculada exige validação da Passos Mágicos.
+4. A Pedra recalculada pela fórmula do INDE (`calcular_pedra_por_inde`) é usada apenas como comparação de QA pontual dentro do notebook 01 (variável `pedra_recalculada`, não persistida), não é um campo mantido no painel processado. Caso vire um campo oficial `PEDRA_CALCULADA` no futuro, esta regra deve ser atualizada. A divergência entre a Pedra fornecida e a recalculada exige validação da Passos Mágicos.
 5. Tratar ausências estruturais por ano como indisponibilidade de medição, não como zero. Em particular, excluir `IPP` de comparações que incluam 2022 ou usar uma estratégia de disponibilidade explicitamente validada no modelo. A ausência na aba recebida não prova que o indicador não tenha sido coletado pela Associação.
 6. Não expor nome, data de nascimento integral, `RA` ou qualquer identificador individual em visualizações, logs, apresentação ou aplicativo.
 
