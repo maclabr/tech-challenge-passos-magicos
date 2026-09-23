@@ -29,7 +29,7 @@ from src.modeling import (  # noqa: E402
     separar_treino_teste_temporal,
 )
 
-# 3 linhas por combinação (ano, alvo, defasagem) — o mínimo para que a classe
+# 3 linhas por combinação (ano, alvo, defasagem), o mínimo para que a classe
 # minoritária do treino (2022) sustente o piso de 3 folds de
 # `selecionar_modelo_por_cv` sem erro.
 _REPETICOES_POR_COMBO = 3
@@ -46,7 +46,7 @@ def _painel_minimo() -> pd.DataFrame:
 
 
 def _dataset_sintetico_separavel(n_por_classe: int = 15) -> tuple[pd.DataFrame, pd.Series]:
-    """Duas classes bem separadas por uma única feature — cenário simples e determinístico para CV."""
+    """Duas classes bem separadas por uma única feature, cenário simples e determinístico para CV."""
     rng = np.random.default_rng(RANDOM_STATE)
     x = pd.DataFrame(
         {

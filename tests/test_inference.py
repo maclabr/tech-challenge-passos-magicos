@@ -18,7 +18,7 @@ from src.modeling import (  # noqa: E402
     treinar_pipeline_final,
 )
 
-# 3 linhas por combinação (ano, alvo, defasagem) — o mesmo piso usado em
+# 3 linhas por combinação (ano, alvo, defasagem), o mesmo piso usado em
 # test_modeling.py para sustentar os 3 folds mínimos da calibração (cv=5 reduz
 # até esse piso quando a classe minoritária é pequena).
 _REPETICOES_POR_COMBO = 3

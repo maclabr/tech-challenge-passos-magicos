@@ -4,7 +4,7 @@ Teste de fumaça de src/data_prep.py.
 Roda build_painel() e build_painel_com_alvo() contra a base real
 (data/raw/base_bronze.xlsx) e confere que o shape resultante é plausível.
 Não hardcoda números exatos de linhas/valores porque a base é um dado real
-que pode ser atualizado — em vez disso, compara o painel contra o que as
+que pode ser atualizado, em vez disso, compara o painel contra o que as
 próprias abas brutas reportam (ex.: soma de linhas) e checa invariantes
 estruturais (colunas esperadas, anos esperados, ausência de vazamento).
 """
@@ -96,7 +96,7 @@ def test_padronizar_nomes_e_categorias():
     assert all(coluna == coluna.upper() for coluna in painel_final.columns)
 
     # 2. fase_num/fase_ideal_num -> FASE/FASE_IDEAL é um renomeio especial
-    # (tira o sufixo "_num", não é só um uppercase direto) — confirma que
+    # (tira o sufixo "_num", não é só um uppercase direto), confirma que
     # nem o nome original nem um uppercase ingênuo (FASE_NUM) sobrevivem.
     assert "FASE" in painel_final.columns
     assert "FASE_IDEAL" in painel_final.columns
