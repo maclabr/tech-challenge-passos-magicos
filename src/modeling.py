@@ -204,7 +204,7 @@ def aplicar_calibracao(pipeline_vencedor: Pipeline, x_treino: pd.DataFrame, y_tr
     """Calibra as probabilidades do pipeline vencedor só com dados de treino.
 
     `CalibratedClassifierCV` clona o estimador internamente, então não importa se
-    `pipeline_vencedor` já foi ajustado antes — o ajuste de calibração usado é
+    `pipeline_vencedor` já foi ajustado antes, o ajuste de calibração usado é
     sempre o feito aqui dentro, exclusivamente em `x_treino`/`y_treino`.
     """
     calibrado = CalibratedClassifierCV(pipeline_vencedor, method="sigmoid", cv=5)
@@ -225,7 +225,7 @@ def treinar_pipeline_final(painel: pd.DataFrame, tipo_alvo: str) -> tuple[Calibr
 
     Retorna dois pipelines ajustados nos mesmos dados: o calibrado (gera a
     probabilidade) e um auxiliar não calibrado, ajustado uma única vez, usado só
-    para leitura de coeficiente/explicação — o `CalibratedClassifierCV` com cv=5
+    para leitura de coeficiente/explicação, o `CalibratedClassifierCV` com cv=5
     guarda 5 classificadores internos por fold, potencialmente com colunas de
     indicador de ausência diferentes entre folds, então não serve para extrair
     coeficiente de forma segura.

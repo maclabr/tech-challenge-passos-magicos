@@ -1,9 +1,9 @@
 """
 Funções auxiliares da análise exploratória (Fase 5, notebook 02).
 
-Reúne aqui só a lógica que se repete em mais de uma pergunta de negócio —
+Reúne aqui só a lógica que se repete em mais de uma pergunta de negócio,
 filtrar alunos com histórico em vários anos, e montar pares de anos
-consecutivos por aluno — para não duplicar o mesmo `groupby`/`merge` em
+consecutivos por aluno, para não duplicar o mesmo `groupby`/`merge` em
 cada célula do notebook. Trabalha sobre o painel já padronizado (colunas em
 maiúsculo: `RA`, `ANO`, etc.), o formato salvo em
 `data/processed/pede_painel_consolidado.csv`.
@@ -20,7 +20,7 @@ def filtrar_alunos_com_todos_os_anos(painel: pd.DataFrame, anos: tuple[int, ...]
     os anos pedidos (por padrão, todos os anos presentes em `painel`).
 
     A maioria dos alunos NÃO tem histórico nos 3 anos da base (só 468 de
-    1.661 RAs aparecem em 2022+2023+2024 — os demais entraram, saíram ou
+    1.661 RAs aparecem em 2022+2023+2024, os demais entraram, saíram ou
     faltaram a alguma edição da PEDE). Qualquer pergunta sobre evolução ou
     comportamento ao longo do tempo só pode ser respondida para quem tem
     esse histórico completo, e este filtro deixa explícito que o resultado
@@ -43,7 +43,7 @@ def construir_pares_anos_consecutivos(painel: pd.DataFrame, colunas: list[str]) 
 
     Usa o mesmo truque de `build_painel_com_alvo` (em `src/data_prep.py`):
     subtrai 1 do "ano seguinte" antes do merge para casar cada linha com a
-    linha do ano anterior do mesmo aluno. É um join interno — alunos sem o
+    linha do ano anterior do mesmo aluno. É um join interno, alunos sem o
     ano seguinte na base (evasão) ou sem o ano anterior (ingresso) não geram
     par, então o número de pares é sempre menor que o número de linhas do
     painel, nunca precisa ser tratado como erro.

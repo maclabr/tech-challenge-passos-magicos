@@ -19,7 +19,7 @@ DIRETORIO_MODELOS = Path("models")
 
 # Métricas do teste temporal auditado (2022 -> 2023/2024), documentadas no notebook 03.
 # NÃO são as métricas do modelo de produção retreinado aqui com mais dado (treino +
-# validação combinados) — servem só como referência de expectativa de desempenho.
+# validação combinados), servem só como referência de expectativa de desempenho.
 METRICAS_REFERENCIA = {
     ALVO_RISCO_FUTURO: {
         "accuracy": 0.725,

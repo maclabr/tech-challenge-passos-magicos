@@ -1,13 +1,13 @@
 """
 Funções de preparação de dados do Datathon Passos Mágicos (Fase 5).
 
-O arquivo bruto (data/raw/base_bronze.xlsx) tem 3 abas — PEDE2022, PEDE2023 e
-PEDE2024 — uma por edição da Pesquisa Extensiva do Desenvolvimento Educacional
+O arquivo bruto (data/raw/base_bronze.xlsx) tem 3 abas,  PEDE2022, PEDE2023 e
+PEDE2024,  uma por edição da Pesquisa Extensiva do Desenvolvimento Educacional
 (PEDE). Cada aba tem um conjunto DIFERENTE de nomes de coluna: os nomes mudam
 de ano para ano, alguns indicadores (ex.: IPP) só passaram a existir a partir
 de 2023, e o formato da coluna de Fase muda a cada ano. O dicionário de dados
 oficial documenta um schema mais antigo (sufixos _2020/_2021/_2022) que NÃO
-bate exatamente com as abas reais deste arquivo — por isso as funções abaixo
+bate exatamente com as abas reais deste arquivo,  por isso as funções abaixo
 foram escritas a partir da inspeção direta das colunas de cada aba (ver
 `inspecionar_abas`), não do dicionário.
 
@@ -53,7 +53,7 @@ _MAPA_GENERO = {
 
 # "Agata" (sem acento) aparece em 2023/2024, "Ágata" nas colunas históricas
 # de 2022. "INCLUIR" aparece em Pedra 2024 para alunos cuja classificação
-# ainda não foi fechada — não é uma categoria de Pedra válida, então vira
+# ainda não foi fechada, não é uma categoria de Pedra válida, então vira
 # ausente (NaN) em vez de ser tratada como uma 5ª pedra.
 _MAPA_PEDRA = {
     "Agata": "Ágata",
@@ -118,7 +118,7 @@ def _extrair_numero_fase(valor) -> float:
                                     ou só o número sem letra ("9"), ou "ALFA".
 
     Em todos os casos "ALFA" (com ou sem sufixo) equivale ao nível 0. Nos
-    demais casos, o primeiro grupo de dígitos da string é o nível de fase —
+    demais casos, o primeiro grupo de dígitos da string é o nível de fase, 
     em "Fase 4 (9º ano)" o primeiro número é sempre o nível da fase (o "4"),
     nunca o ano escolar entre parênteses, porque este último aparece depois
     na string.
@@ -146,7 +146,7 @@ def _extrair_ano_nascimento(df: pd.DataFrame, ano: int) -> pd.Series:
 
     PEDE2022 tem "Ano nasc" (int, direto). PEDE2023/2024 têm "Data de Nasc":
     em 2023 a coluna vem com tipos misturados (strings "m/d/yyyy" e objetos
-    datetime já convertidos pelo Excel), em 2024 já vem como datetime puro —
+    datetime já convertidos pelo Excel), em 2024 já vem como datetime puro, 
     em ambos os casos `pd.to_datetime` normaliza e extraímos só o ano.
     """
     if ano == 2022:
@@ -166,11 +166,11 @@ def _harmonizar_ano(df: pd.DataFrame, ano: int) -> pd.DataFrame:
     Harmoniza uma única aba (um ano) para o esquema padronizado em
     snake_case usado no painel longo.
 
-    Os nomes das colunas de origem mudam ano a ano — inclusive o indicador
+    Os nomes das colunas de origem mudam ano a ano, inclusive o indicador
     "atual" muda de nome: em 2022 o INDE do próprio ano está em "INDE 22",
     mas em 2023/2024 ele está em "INDE 2023"/"INDE 2024" (as colunas
     "INDE 23"/"Pedra 23" que aparecem em PEDE2023 são um campo legado vazio,
-    não o valor do ano — confirmado na inspeção: 0 valores não nulos). Por
+    não o valor do ano, confirmado na inspeção: 0 valores não nulos). Por
     isso o mapeamento de colunas é resolvido explicitamente por ano abaixo,
     em vez de tentar adivinhar um padrão único de nome.
     """
@@ -253,8 +253,8 @@ def build_painel_com_alvo(painel: pd.DataFrame) -> pd.DataFrame:
     (join em ra + ano-1) para não vazar informação do próprio ano da linha.
 
     Usamos `defasagem_calculada` (não `defasagem_fornecida`) como base do
-    alvo porque está disponível para 100% das linhas — deriva só de Fase e
-    Fase Ideal, que estão sempre preenchidas — enquanto a coluna fornecida
+    alvo porque está disponível para 100% das linhas, deriva só de Fase e
+    Fase Ideal, que estão sempre preenchidas, enquanto a coluna fornecida
     pela Passos Mágicos pode ter ausências pontuais. A seção de QA do
     notebook mostra o quão próximas as duas são.
     """
@@ -301,7 +301,7 @@ def padronizar_nomes_e_categorias(painel: pd.DataFrame) -> pd.DataFrame:
 
     1. Renomeia todas as colunas para maiúsculo. `fase_num` e
        `fase_ideal_num` viram `FASE` e `FASE_IDEAL` (tirando o sufixo
-       "_num", não só maiusculizando) — os demais nomes são um uppercase
+       "_num", não só maiusculizando), os demais nomes são um uppercase
        direto do snake_case (ex.: `ida` -> `IDA`, `genero` -> `GENERO`).
     2. Nas colunas de texto/categóricas (`GENERO`, `PEDRA`, `TURMA`,
        `INSTITUICAO_ENSINO`, `INDICADO`, `ATINGIU_PV`, já com o nome pós
@@ -309,7 +309,7 @@ def padronizar_nomes_e_categorias(painel: pd.DataFrame) -> pd.DataFrame:
        maiúsculo, preservando os espaços entre palavras.
 
     Deliberadamente NÃO arredonda nenhuma coluna numérica, NÃO troca o
-    separador decimal (continua ponto) e NÃO preenche valores ausentes —
+    separador decimal (continua ponto) e NÃO preenche valores ausentes,
     ver a célula de decisão no notebook 01, logo antes do salvamento do CSV.
     """
     renomeado = painel.rename(
