@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 
 import joblib
+import numpy as np
 import pandas as pd
 import streamlit as st
 
@@ -29,11 +30,6 @@ st.set_page_config(
 )
 
 aplicar_estilo()
-
-# Limiar utilizado apenas como referência operacional.
-# O projeto não definiu um limiar de produção baseado
-# em uma regra de negócio.
-LIMIAR_REFERENCIA = 0.50
 
 
 # ==========================================================
@@ -583,6 +579,25 @@ def cabecalho_formulario(titulo, subtitulo, tipo):
     st.markdown(html, unsafe_allow_html=True)
 
 
+def campo_com_ausencia(label, key, **kwargs_number_input):
+    """Number input com opção de marcar o indicador como não informado.
+
+    Quando "Não sei" está marcado, o valor retornado é np.nan em vez do
+    valor exibido no widget (ver contrato_de_dados.md, regra 5).
+    """
+
+    nao_sei = st.checkbox("Não sei", key=f"na_{key}")
+
+    valor = st.number_input(
+        label,
+        key=f"valor_{key}",
+        disabled=nao_sei,
+        **kwargs_number_input,
+    )
+
+    return np.nan if nao_sei else valor
+
+
 def nome_feature(nome):
 
     mapa = {
@@ -780,12 +795,13 @@ with st.form(
         "education",
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
 
     with col1:
 
-        fase = st.number_input(
+        fase = campo_com_ausencia(
             "Fase atual",
+            "fase",
             min_value=0.0,
             max_value=9.0,
             value=3.0,
@@ -794,8 +810,9 @@ with st.form(
 
     with col2:
 
-        fase_ideal = st.number_input(
+        fase_ideal = campo_com_ausencia(
             "Fase ideal",
+            "fase_ideal",
             min_value=0.0,
             max_value=9.0,
             value=3.0,
@@ -804,26 +821,34 @@ with st.form(
 
     with col3:
 
-        defasagem = st.number_input(
-            "Defasagem calculada",
-            min_value=-10.0,
-            max_value=10.0,
-            value=0.0,
-            step=1.0,
-            help=(
-                "Diferença entre a situação observada "
-                "e a fase educacional considerada ideal."
-            ),
-        )
-
-    with col4:
-
-        idade = st.number_input(
+        idade = campo_com_ausencia(
             "Idade",
+            "idade",
             min_value=5,
             max_value=35,
             value=14,
             step=1,
+        )
+
+    # DEFASAGEM_CALCULADA não é digitável: nos dados reais ela sempre é
+    # FASE - FASE_IDEAL, então o formulário calcula o mesmo jeito para não
+    # gerar combinações que o modelo nunca viu em treino.
+    if pd.isna(fase) or pd.isna(fase_ideal):
+
+        defasagem = np.nan
+
+        st.caption(
+            "Defasagem calculada: indisponível "
+            "(informe fase e fase ideal)."
+        )
+
+    else:
+
+        defasagem = fase - fase_ideal
+
+        st.caption(
+            "Defasagem calculada automaticamente "
+            f"(fase − fase ideal): **{defasagem:g}**"
         )
 
 
@@ -845,8 +870,9 @@ with st.form(
 
     with col1:
 
-        ian = st.number_input(
+        ian = campo_com_ausencia(
             "IAN",
+            "ian",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -854,8 +880,9 @@ with st.form(
             format="%.2f",
         )
 
-        iaa = st.number_input(
+        iaa = campo_com_ausencia(
             "IAA",
+            "iaa",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -866,8 +893,9 @@ with st.form(
 
     with col2:
 
-        ida = st.number_input(
+        ida = campo_com_ausencia(
             "IDA",
+            "ida",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -875,8 +903,9 @@ with st.form(
             format="%.2f",
         )
 
-        ips = st.number_input(
+        ips = campo_com_ausencia(
             "IPS",
+            "ips",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -887,8 +916,9 @@ with st.form(
 
     with col3:
 
-        ieg = st.number_input(
+        ieg = campo_com_ausencia(
             "IEG",
+            "ieg",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -896,8 +926,9 @@ with st.form(
             format="%.2f",
         )
 
-        ipv = st.number_input(
+        ipv = campo_com_ausencia(
             "IPV",
+            "ipv",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -908,8 +939,9 @@ with st.form(
 
     with col4:
 
-        ano_ingresso = st.number_input(
+        ano_ingresso = campo_com_ausencia(
             "Ano de ingresso",
+            "ano_ingresso",
             min_value=1990,
             max_value=2026,
             value=2020,
@@ -935,8 +967,9 @@ with st.form(
 
     with col1:
 
-        nota_matematica = st.number_input(
+        nota_matematica = campo_com_ausencia(
             "Nota de Matemática",
+            "nota_matematica",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -947,8 +980,9 @@ with st.form(
 
     with col2:
 
-        nota_portugues = st.number_input(
+        nota_portugues = campo_com_ausencia(
             "Nota de Português",
+            "nota_portugues",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -959,8 +993,9 @@ with st.form(
 
     with col3:
 
-        nota_ingles = st.number_input(
+        nota_ingles = campo_com_ausencia(
             "Nota de Inglês",
+            "nota_ingles",
             min_value=0.0,
             max_value=10.0,
             value=7.0,
@@ -982,12 +1017,23 @@ with st.form(
 # 3. PREVISÃO
 # ==========================================================
 
+# st.form_submit_button só retorna True no rerun imediatamente após o
+# clique; sem esta flag em session_state, mexer no slider de limiar
+# (fora do form) dispararia um rerun em que `calcular` volta a ser
+# False, fazendo a seção de resultado — incluindo o próprio slider —
+# desaparecer.
 if calcular:
+    st.session_state["avaliacao_risco_calculada"] = True
+
+if st.session_state.get("avaliacao_risco_calculada"):
 
     # ======================================================
     # VALIDAÇÃO DO MODELO DE NOVA INCIDÊNCIA
     # ======================================================
 
+    # `defasagem < 0` retorna False quando defasagem é np.nan (fase ou
+    # fase ideal não informadas), então o aviso simplesmente não dispara
+    # nesse caso — não dá pra validar uma defasagem que não se conhece.
     if (
         tipo_modelo
         == "Nova incidência de defasagem"
@@ -1065,9 +1111,22 @@ if calcular:
             )[0][1]
         )
 
+        limiar = st.slider(
+            "Limiar de decisão",
+            min_value=0.10,
+            max_value=0.90,
+            value=0.50,
+            step=0.05,
+            help=(
+                "Decisão de negócio ainda pendente com a Passos "
+                "Mágicos (contrato de dados, seção 7) — ajuste "
+                "livremente para ver como a classificação muda."
+            ),
+        )
+
         sinalizado = (
             probabilidade
-            >= LIMIAR_REFERENCIA
+            >= limiar
         )
 
 
@@ -1131,7 +1190,7 @@ if calcular:
             (
                 '<div class="threshold-note">'
                 '<strong>Referência operacional:</strong> '
-                f'o ponto de corte de {LIMIAR_REFERENCIA:.0%} '
+                f'o ponto de corte de {limiar:.0%} '
                 'é utilizado nesta página apenas para transformar '
                 'a probabilidade em uma sinalização de referência. '
                 'Ele não representa um limiar de produção definido '
@@ -1151,7 +1210,7 @@ if calcular:
                 f"""
                 **O perfil foi sinalizado para atenção pelo
                 limiar de referência de
-                {LIMIAR_REFERENCIA:.0%}.**
+                {limiar:.0%}.**
 
                 A probabilidade estimada pelo modelo foi de
                 **{probabilidade:.1%}**.
@@ -1168,7 +1227,7 @@ if calcular:
                 f"""
                 **O perfil não foi sinalizado pelo limiar de
                 referência de
-                {LIMIAR_REFERENCIA:.0%}.**
+                {limiar:.0%}.**
 
                 A probabilidade estimada pelo modelo foi de
                 **{probabilidade:.1%}**.
@@ -1352,7 +1411,7 @@ if calcular:
             '<div class="method-note">'
             '<strong>Como interpretar:</strong> '
             'a probabilidade é a saída do modelo preditivo. '
-            f'O limiar de {LIMIAR_REFERENCIA:.0%} é '
+            f'O limiar de {limiar:.0%} é '
             'apresentado apenas como uma referência '
             'operacional para transformar a probabilidade '
             'em uma sinalização binária. '
