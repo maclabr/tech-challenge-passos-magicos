@@ -25,3 +25,5 @@ Thumbs.db
 # Editores / IDEs
 .vscode/
 .idea/
+
+.claude/
